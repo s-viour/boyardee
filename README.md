@@ -12,7 +12,9 @@ boyardee uses slash commands and discord.js v13, so it **requires Nodejs v16.6.0
 }
 ```
 where all those fields are filled in with the bot's client id, the guild's id to register commands to, and your bot's token.
+
 2. run `npm run deploy-commands` to register the commands in the guild supplied in the config file
+
 3. run `npm start` to start the bot!
 
 # commands
