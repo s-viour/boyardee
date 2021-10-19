@@ -15,9 +15,38 @@ module.exports = {
             .setRequired(true)),
     
     async execute(interaction) {
-        const recipe = JSON.parse(interaction.options.getString('recipe'));
+        // first, attempt to parse the recipe as a valid JSON formatted recipe
+        let recipe;
+        try {
+            recipe = JSON.parse(interaction.options.getString('recipe'));
+        } catch (e) {
+            // and if that fails, just take it as the string
+            if (e instanceof SyntaxError) {
+                recipe = interaction.options.getString('recipe');
+            } else {
+                // if something else happened though, rethrow
+                throw e;
+            }
+        }
+
         const input = interaction.options.getString('input');
-        const output = chef.bake(input, recipe);
+
+        // attempt to generate the output with bake
+        let output;
+        try {
+            output = chef.bake(input, recipe);
+        } catch (e) {
+            if (e instanceof TypeError) {
+                // bake(...) throws a TypeError if the recipe name isn't valid
+                return interaction.reply({content: `invalid recipe: ${e.message}`, ephemeral: true});
+            } else if (e instanceof chef.ExcludedOperationError) {
+                // explicitly handle the unsupported operation error with a special message
+                return interaction.reply({content: `unsupported operation: ${e.message}`, ephemeral: true});
+            } else {
+                throw e;
+            }
+        }
+
         return interaction.reply(output.toString());
     },
 };
