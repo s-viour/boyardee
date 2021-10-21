@@ -1,6 +1,19 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const chef = require('cyberchef');
 
+
+const fixOperationStrings = (s) => {
+    if (s instanceof String) {
+        console.log('s is a string');
+        return s.replace('/', '');
+    }
+
+    return s.map(elem => {
+        elem.op = elem.op.replace('/', '');
+        return elem;
+    });
+};
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('bake')
@@ -16,18 +29,19 @@ module.exports = {
     
     async execute(interaction) {
         // first, attempt to parse the recipe as a valid JSON formatted recipe
-        let recipe;
+        let _recipe;
         try {
-            recipe = JSON.parse(interaction.options.getString('recipe'));
+            _recipe = JSON.parse(interaction.options.getString('recipe'));
         } catch (e) {
             // and if that fails, just take it as the string
             if (e instanceof SyntaxError) {
-                recipe = interaction.options.getString('recipe');
+                _recipe = interaction.options.getString('recipe');
             } else {
                 // if something else happened though, rethrow
                 throw e;
             }
         }
+        const recipe = fixOperationStrings(_recipe);
 
         const input = interaction.options.getString('input');
 
