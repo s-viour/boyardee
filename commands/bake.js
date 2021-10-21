@@ -12,7 +12,11 @@ module.exports = {
         .addStringOption(option => option
             .setName('input')
             .setDescription('input to work on')
-            .setRequired(true)),
+            .setRequired(true))
+        .addStringOption(option => option
+            .setName('saveas')
+            .setDescription('specify a name to save the recipe')
+            .setRequired(false)),
     
     async execute(interaction) {
         // first, attempt to parse the recipe as a valid JSON formatted recipe
@@ -26,6 +30,16 @@ module.exports = {
             } else {
                 // if something else happened though, rethrow
                 throw e;
+            }
+        }
+
+        // Check that the saveas name is valid before doing any baking
+        let to_save = interaction.options.getString('saveas')
+        if (to_save) {
+            // Strip non-alphanumeric characters from the name
+            to_save = to_save.replace(/\W/g, '');
+            if (to_save.length == 0) {
+                return interaction.reply({content: "Recipe name must contain at least one alphanumeric character", ephemeral: true})
             }
         }
 
@@ -47,6 +61,13 @@ module.exports = {
             }
         }
 
-        return interaction.reply(output.toString());
+        let reply = output.toString()
+        if (to_save) {
+            const db = require('..');
+            db.set(to_save, recipe)
+            reply += `\n\nSaved recipe \`\`\`${JSON.stringify(recipe)}\`\`\` as ${to_save}`
+        }
+
+        return interaction.reply(reply);
     },
 };
