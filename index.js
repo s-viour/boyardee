@@ -2,6 +2,9 @@ require('dotenv').config()
 const { Client, Collection, Intents } = require('discord.js');
 const fs = require('fs');
 const { token }  = require('./config.json');
+const jsoning = require('jsoning')
+const db = new jsoning('recipe_db.json')
+module.exports = db;
 
 
 const client = new Client({intents: [Intents.FLAGS.GUILDS]});
