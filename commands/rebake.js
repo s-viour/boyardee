@@ -23,7 +23,6 @@ module.exports = {
             return interaction.reply({content: "Recipe name not found in database", ephemeral: true});
         }
         const input = interaction.options.getString('input');
-        console.log(recipe);
 
         // attempt to generate the output with bake
         let output;
