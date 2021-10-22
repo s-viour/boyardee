@@ -28,7 +28,7 @@ module.exports = {
 
     const options = [];
     let iter = 1;
-    recipes.forEach((name) => {
+    Object.keys(recipes).forEach((name) => {
       options.push({
         label: name,
         description: `Recipe ${iter}`,
