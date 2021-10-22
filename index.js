@@ -21,7 +21,23 @@ client.once('ready', () => {
 });
 
 client.on('interactionCreate', async (interaction) => {
-  if (!interaction.isCommand()) { return; }
+  if (!(interaction.isCommand() || interaction.isSelectMenu())) { return; }
+
+  if (interaction.isSelectMenu()) {
+    const name = interaction.values[0];
+    const recipe = await db.get(name);
+    if (!recipe) {
+      await interaction.update({
+        content: `Recipe ${name} no longer exists in the cookbook`,
+        ephemeral: true,
+      });
+      return;
+    }
+    await interaction.update({
+      content: `**Recipe ${name}:**\n ${JSON.stringify(recipe, null, 2)}`,
+    });
+    return;
+  }
 
   const command = client.commands.get(interaction.commandName);
   if (!command) { return; }
