@@ -4,7 +4,7 @@ const { MessageActionRow, MessageSelectMenu } = require('discord.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('cookbook')
-    .setDescription('takes a saved recipe and an input and bakes it using cyberchef')
+    .setDescription('Displays names of all saved recipes')
     .addStringOption((option) => option
       .setName('remove')
       .setDescription('A recipe to remove')),
