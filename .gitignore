@@ -93,3 +93,6 @@ Thumbs.db
 
 # ignore config.json, since that's the standard discord bot config file
 config.json
+
+# ignore the recipe database
+recipe_db.json
