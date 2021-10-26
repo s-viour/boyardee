@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const chef = require('cyberchef');
 
 const fixOperationStrings = (s) => {
-  if (s instanceof String) {
+  if (typeof s === 'string') {
     console.log('s is a string');
     return s.replace('/', '');
   }

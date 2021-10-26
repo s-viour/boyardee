@@ -1,8 +1,8 @@
-const { clientId, guildId, token, mode } = require('./config.json');
+require('dotenv').config();
 const { Client, Collection, Intents } = require('discord.js');
-const { deployCommandsToServer, deployCommandsGlobal } = require('./src/deploy.js');
 const fs = require('fs');
 const Jsoning = require('jsoning');
+const { token } = require('./config.json');
 
 const db = new Jsoning('recipe_db.json');
 module.exports = db;
@@ -52,13 +52,5 @@ client.on('interactionCreate', async (interaction) => {
     });
   }
 });
-
-if (mode == 'TEST') {
-  deployCommandsToServer(clientId, guildId);
-} else if (mode == 'GLOBAL') {
-  deployCommandsGlobal(clientId);
-} else {
-  console.log(`invalid mode ${mode}`);
-}
 
 client.login(token);

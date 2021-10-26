@@ -14,7 +14,7 @@ module.exports = {
 
     const remove = interaction.options.getString('remove');
     if (typeof remove === 'string') {
-      if (db.has(remove)) {
+      if (await db.has(remove)) {
         db.delete(remove);
         return interaction.reply({ content: `Recipe ${remove} was removed from the cookbook` });
       }
@@ -22,7 +22,7 @@ module.exports = {
     }
 
     const recipes = await db.all();
-    if (recipes === false) {
+    if (Object.keys(recipes).length == 0) {
       return interaction.reply({ content: 'Cookbook is empty', ephemeral: true });
     }
 
