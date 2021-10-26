@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const chef = require('cyberchef');
+const { MessageAttachment } = require('discord.js');
 
 const fixOperationStrings = (s) => {
   if (typeof s === 'string') {
@@ -72,13 +73,30 @@ module.exports = {
         return interaction.reply({ content: `unsupported operation: ${e.message}`, ephemeral: true });
       }
       throw e;
+    } finally {
+      console.dir(output);
     }
 
-    let reply = output.toString();
+    let reply = { content: "", files: [] };
+
+    if (output.size > 2000) {
+      console.log('sending message with attachment');
+      reply.content = 'Output: \n';
+      const bytes = Buffer.from(output.get('array buffer'));
+      console.log(`bytes: ${bytes}`);
+      const opts = {
+        attachment: bytes,
+        name: 'output'
+      };
+      reply.files.push(opts);
+    } else {
+      reply.content = output.toString();
+    }
+
     if (toSave) {
       const db = require('..');
       db.set(toSave, recipe);
-      reply += `\n\nSaved recipe \`\`\`${JSON.stringify(recipe)}\`\`\` as ${toSave}`;
+      reply.content += `\n\nSaved recipe \`\`\`${JSON.stringify(recipe)}\`\`\` as ${toSave}`;
     }
 
     return interaction.reply(reply);
